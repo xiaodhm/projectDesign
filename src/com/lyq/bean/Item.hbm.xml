@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!DOCTYPE hibernate-mapping PUBLIC
+        "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+        "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping package="com.lyq.bean">
+    <class name="Item"  table="item">
+        <id name="imid"  column="itemid">
+            <generator  class="native"></generator>
+        </id>
+        <property name="itemname" column="itemname"></property>
+        <set name="selectors" cascade="all">
+            <key column="itid"></key>
+            <one-to-many class="com.lyq.bean.Selector"></one-to-many>
+        </set>
+    </class>
+</hibernate-mapping>

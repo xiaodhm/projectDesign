@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE struts PUBLIC
+        "-//Apache Software Foundation//DTD Struts Configuration 2.5//EN"
+        "http://struts.apache.org/dtds/struts-2.5.dtd">
+
+
+<struts>
+    <package name="default" extends="struts-default" namespace="/">
+        <action name="adminLogin" class="com.lyq.action.AdminAction" method="comfirm">
+            <result name="success">/detail/front/left.jsp</result>
+            <result name="login">/detail/front/left.jsp</result>
+        </action>
+        <action name="userLogin" class="com.lyq.action.UserAction" method="login">
+            <result name="login" >/detail/front/left.jsp</result>
+            <result name="success">/detail/front/left.jsp</result>
+        </action>
+
+    </package>
+
+    <package name="item" extends="struts-default" namespace="/item">
+        <action name="itemList" class="com.lyq.action.ItemAction" method="getItemlist">
+            <result name="success" type="redirect">/detail/back/content/itemlist.jsp</result>
+        </action>
+        <action name="itemDelete" class="com.lyq.action.ItemAction" method="deleteItem">
+            <result name="success" type="redirectAction">itemList</result>
+        </action>
+        <action name="itemSave" class="com.lyq.action.ItemAction" method="saveItem">
+            <result name="success" type="redirectAction">itemList</result>
+        </action>
+        <action name="itemShow" class="com.lyq.action.ItemAction" method="showItem">
+            <result name="success" type="redirect">/detail/back/content/saveSelector.jsp</result>
+        </action>
+    </package>
+
+    <package name="opt" extends="struts-default" namespace="/option">
+<action name="optionList" class="com.lyq.action.SelectorAction" method="optList">
+    <result name="success" type="redirect">/detail/back/content/slctorlist.jsp</result>
+</action>
+<action name="optionDelete" class="com.lyq.action.SelectorAction" method="optDelete">
+    <result name="success" type="redirectAction">optionList</result>
+</action>
+<action name="optionSave" class="com.lyq.action.SelectorAction" method="optSave">
+    <result name="success" type="redirectAction">optionList</result>
+</action>
+<action name="optCount" class="com.lyq.action.SelectorAction" method="optCunt">
+      <result name="success" type="redirect">/detail/back/content/votelist.jsp</result>
+</action>
+        <action name="optCountUser" class="com.lyq.action.SelectorAction" method="optNumUser">
+            <result name="success" type="redirect">/detail/front/myVote.jsp</result>
+        </action>
+        <action name="optCheckUser" class="com.lyq.action.SelectorAction" method="optCheckUser">
+            <result name="success" type="redirect">/detail/front/slctor.jsp</result>
+        </action>
+        <action name="voted" class="com.lyq.action.VoteAction" method="voted">
+            <result name="success" type="redirectAction">optCheckUser</result>
+            <result name="error" type="redirect">/detail/front/slctor.jsp</result>
+        </action>
+</package>
+</struts>
+

@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!DOCTYPE hibernate-mapping PUBLIC
+        "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+        "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<hibernate-mapping package="com.lyq.bean">
+    <class name="com.lyq.bean.UserBean" table="user">
+        <id name="usrid" column="userid">
+            <generator class="native"></generator>
+        </id>
+        <property name="username" column="username"></property>
+        <property name="password" column="password"></property>
+        <property name="job" column="job"></property>
+        <property name="sex" column="sex"></property>
+        <property name="email" column="email"></property>
+
+        <set name="selectors" table="voted">
+            <key column="usrid"></key>
+            <many-to-many class="com.lyq.bean.Selector" column="slcid"></many-to-many>
+        </set>
+    </class>
+</hibernate-mapping>
+

@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:tx="http://www.springframework.org/schema/tx"
+       xmlns:aop="http://www.springframework.org/schema/aop"
+       xsi:schemaLocation="
+        http://www.springframework.org/schema/beans
+        http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/tx
+        http://www.springframework.org/schema/tx/spring-tx.xsd
+        http://www.springframework.org/schema/aop
+        http://www.springframework.org/schema/aop/spring-aop.xsd">
+
+    <bean id="dataSource" class="com.mchange.v2.c3p0.ComboPooledDataSource">
+        <property name="driverClass" value="com.mysql.jdbc.Driver"></property>
+        <property name="jdbcUrl" value="jdbc:mysql:///vote"></property>
+        <property name="user" value="root"></property>
+        <property name="password" value="123456"></property>
+    </bean>
+    <bean id="sessionFactory" class="org.springframework.orm.hibernate5.LocalSessionFactoryBean">
+        <property name="dataSource" ref="dataSource"></property>
+        <property name="hibernateProperties">
+            <props>
+                <prop key="hibernate.show_sql">true</prop>
+                <prop key="hibernate.format_sql">true</prop>
+                <prop key="hibernate.hbm2ddl.auto">update</prop>
+            </props>
+        </property>
+        <property name="mappingResources">
+            <list>
+                <value>com/lyq/bean/Admin.hbm.xml</value>
+                <value>com/lyq/bean/Item.hbm.xml</value>
+                <value>com/lyq/bean/Selector.hbm.xml</value>
+                <value>com/lyq/bean/UserBean.hbm.xml</value>
+            </list>
+        </property>
+    </bean>
+    <bean id="hibernateTemplate" class="org.springframework.orm.hibernate5.HibernateTemplate">
+        <property name="sessionFactory" ref="sessionFactory"></property>
+    </bean>
+
+
+    <!--数据操作及业务层-->
+    <!--admin-->
+    <bean id="adminDao" class="com.lyq.dao.impl.AdminDaoImpl">
+        <property name="hibernateTemplate" ref="hibernateTemplate"></property>
+    </bean>
+    <bean id="adminService" class="com.lyq.service.impl.AdminServiceImpl">
+        <property name="adminDao" ref="adminDao"></property>
+    </bean>
+
+    <!--item-->
+    <bean id="itemDao" class="com.lyq.dao.impl.ItemDaoImpl">
+        <property name="hibernateTemplate" ref="hibernateTemplate"></property>
+    </bean>
+    <bean id="itemService" class="com.lyq.service.impl.ItemServiceImpl">
+        <property name="itemDao" ref="itemDao"></property>
+    </bean>
+
+    <!--selector-->
+    <bean id="selectorDao" class="com.lyq.dao.impl.SelectorDaoImpl">
+        <property name="hibernateTemplate" ref="hibernateTemplate"></property>
+    </bean>
+    <bean id="selectorService" class="com.lyq.service.impl.SelectorServiceImpl">
+        <property name="selectorDao" ref="selectorDao"></property>
+    </bean>
+
+    <!--user-->
+    <bean id="userDao" class="com.lyq.dao.impl.UserDaoImpl">
+        <property name="hibernateTemplate" ref="hibernateTemplate"></property>
+    </bean>
+    <bean id="userService" class="com.lyq.service.impl.UserServiceImpl">
+        <property name="userDao" ref="userDao"></property>
+    </bean>
+
+    <!--vote-->
+    <bean id="voteDao" class="com.lyq.dao.impl.VoteDaoImpl">
+        <property name="hibernateTemplate" ref="hibernateTemplate"></property>
+    </bean>
+    <bean id="voteService" class="com.lyq.service.impl.VoteServiceImpl">
+        <property name="voteDao" ref="voteDao"></property>
+    </bean>
+
+
+      <!--action-->
+    <bean id="adminAction" class="com.lyq.action.AdminAction" scope="prototype">
+        <property name="adminService" ref="adminService"></property>
+    </bean>
+    <bean id="userAction" class="com.lyq.action.UserAction" scope="prototype">
+        <property name="userService" ref="userService"></property>
+    </bean>
+    <bean id="itemAction" class="com.lyq.action.ItemAction" scope="prototype">
+        <property name="itemService" ref="itemService"></property>
+    </bean>
+    <bean id="selectorAction" class="com.lyq.action.SelectorAction" scope="prototype">
+        <property name="selectorService" ref="selectorService"></property>
+    </bean>
+    <bean id="voteAction" class="com.lyq.action.VoteAction" scope="prototype">
+        <property name="voteService" ref="voteService"></property>
+    </bean>
+
+
+    <!--事务管理-->
+    <bean id="transactionManager"
+          class="org.springframework.orm.hibernate5.HibernateTransactionManager">
+        <property name="sessionFactory" ref="sessionFactory"></property>
+    </bean>
+    <!-- &lt;!&ndash;2.事务通知&ndash;&gt;-->
+    <tx:advice id="txAdvice" transaction-manager="transactionManager">
+        <tx:attributes>
+            <tx:method name="*" isolation="DEFAULT" propagation="REQUIRED"/>
+        </tx:attributes>
+    </tx:advice>
+    <!--&lt;!&ndash;3.事务切面&ndash;&gt;-->
+    <aop:config>
+        <aop:pointcut id="ItemDa" expression="execution(* com.lyq.dao.impl.ItemDaoImpl.*(..))"></aop:pointcut>
+        <aop:advisor advice-ref="txAdvice" pointcut-ref="ItemDa"></aop:advisor>
+    </aop:config>
+
+    <aop:config>
+        <aop:pointcut id="SelectorDa" expression="execution(* com.lyq.dao.impl.SelectorDaoImpl.*(..))"></aop:pointcut>
+        <aop:advisor advice-ref="txAdvice" pointcut-ref="SelectorDa"></aop:advisor>
+    </aop:config>
+    <aop:config>
+        <aop:pointcut id="VoteDa" expression="execution(* com.lyq.dao.impl.VoteDaoImpl.*(..))"></aop:pointcut>
+        <aop:advisor advice-ref="txAdvice" pointcut-ref="VoteDa"></aop:advisor>
+    </aop:config>
+
+</beans>
+
